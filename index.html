@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PC Simulator Coins Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --green: #4caf50;
+      --panel: rgba(0,0,0,0.6);
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: white;
+      background: url('https://i.ibb.co/TDm9ZPh8/Sans-titre-70-20250831171949.jpg') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .wrapper {
+      display: flex;
+      gap: 24px;
+      width: 100%;
+      max-width: 1200px;
+      padding: 24px;
+    }
+
+    /* Leaderboard (left on desktop, bottom on mobile) */
+    #leaderboard {
+      background: var(--panel);
+      padding: 20px;
+      border-radius: 12px;
+      min-width: 260px;
+      max-width: 320px;
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+    }
+    #leaderboard h2 { margin-top: 0; }
+
+    /* Game container */
+    .container {
+      flex: 1;
+      background: rgba(0,0,0,0.28);
+      border-radius: 16px;
+      padding: 28px 20px 36px;
+      text-align: center;
+    }
+
+    /* Outlined title text */
+    .outlined {
+      color: #fff;
+      -webkit-text-stroke: 1.6px #000;
+      text-shadow:
+        1px 1px 0 #000,
+       -1px 1px 0 #000,
+        1px -1px 0 #000,
+       -1px -1px 0 #000,
+        0 2px 4px rgba(0,0,0,0.6);
+    }
+
+    h1.outlined {
+      font-size: 46px;
+      margin: 6px 0 26px;
+      -webkit-text-stroke: 2px #000;
+    }
+
+    /* Big session coins counter */
+    #localCoins {
+      font-size: 42px;
+      font-weight: bold;
+      margin-top: 24px;
+      color: #ffd700;
+      text-shadow: 2px 2px 6px #000;
+    }
+
+    /* Total score line */
+    #totalCoins {
+      margin-top: 8px;
+      font-size: 18px;
+      color: #00dd00;
+      text-shadow: 1px 1px 3px #000;
+    }
+
+    input[type="text"] {
+      font-size: 18px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      width: min(520px, 90%);
+    }
+
+    #earnBtn {
+      font-size: 32px;
+      padding: 18px 52px;
+      margin: 24px 0 16px;
+      border-radius: 14px;
+      border: none;
+      cursor: pointer;
+      background-color: var(--green);
+      color: #fff;                 /* white text */
+      box-shadow: 0 6px 14px rgba(0,0,0,0.45);
+      display: none;               /* hidden until nickname is set */
+    }
+    #earnBtn:active {
+      transform: translateY(1px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+
+    ol#leaderboardList {
+      padding-left: 0;
+      list-style: decimal inside;
+      text-align: left;
+      margin: 12px 0 0;
+    }
+
+    /* Each row is a rounded, filled frame */
+    ol#leaderboardList li {
+      background: rgba(255,255,255,0.12);
+      margin: 6px 0;
+      padding: 10px 14px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+    }
+
+    .rank-1 {
+      background: #ffd700 !important; /* gold */
+      color: #000;
+      font-weight: bold;
+    }
+    .rank-2 {
+      background: #c0c0c0 !important; /* silver */
+      color: #000;
+      font-weight: bold;
+    }
+    .rank-3 {
+      background: #cd7f32 !important; /* bronze */
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .flag { font-size: 18px; }
+
+    /* Optional note */
+    .free-palestine {
+      margin-top: 16px;
+      font-size: 16px;
+      color: #00aa00;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px #000;
+    }
+
+    /* Mobile: leaderboard always under the game (bottom) */
+    @media (max-width: 900px) {
+      .wrapper {
+        flex-direction: column;
+        align-items: center;
+      }
+      .container { order: 1; width: 92%; }
+      #leaderboard { order: 2; margin-top: 20px; width: 92%; max-width: 560px; max-height: unset; }
+      h1.outlined { font-size: 36px; -webkit-text-stroke: 1.6px #000; }
+      #earnBtn { font-size: 26px; padding: 16px 40px; }
+      #localCoins { font-size: 34px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <!-- Main game -->
+    <main class="container">
+      <h1 class="outlined">🔥 PC Simulator Coins Game 🔥</h1>
+
+      <input type="text" id="nickname" placeholder="Enter nickname" autocomplete="off" />
+      <br />
+      <button id="earnBtn">Earn</button>
+
+      <!-- Big session counter + total -->
+      <div id="localCoins">💰 PC Simulator Coins: 0</div>
+      <div id="totalCoins">Your Total Score: 0</div>
+
+      <div class="free-palestine">✊ Free Palestine 🇵🇸</div>
+    </main>
+
+    <!-- Leaderboard -->
+    <aside id="leaderboard">
+      <h2>🏆 Leaderboard</h2>
+      <ol id="leaderboardList"></ol>
+    </aside>
+  </div>
+
+  <script>
+    /***************  SET THESE 3 VALUES  ***************/
+    const REPO = "YOUR_USER/YOUR_REPO";      // e.g. "octocat/my-game"
+    const FILE_PATH = "users.json";          // keep as "users.json"
+    const GITHUB_TOKEN = "YOUR_GH_PAT_TOKEN"; // ghp_xxx with repo access
+    /****************************************************/
+
+    // ---- Elements
+    const nicknameEl = document.getElementById("nickname");
+    const earnBtn = document.getElementById("earnBtn");
+    const leaderboardList = document.getElementById("leaderboardList");
+    const localCoinsEl = document.getElementById("localCoins");
+    const totalCoinsEl = document.getElementById("totalCoins");
+
+    // ---- State
+    let sessionScore = 0;
+    let allUsers = [];
+    let currentUser = null; // { nickname, totalScore, flag }
+    let fileSha = null;     // latest SHA of users.json
+    let detectedFlag = "🇵🇸"; // default fallback
+
+    // ---- Helpers
+    const API_URL = `https://api.github.com/repos/${REPO}/contents/${FILE_PATH}`;
+    const headers = () => ({
+      "Accept": "application/vnd.github+json",
+      "Authorization": `token ${GITHUB_TOKEN}`,
+      "Cache-Control": "no-cache"
+    });
+
+    // Country flag from ISO code
+    function codeToFlag(code) {
+      try {
+        const cc = (code || "").toUpperCase();
+        if (!/^[A-Z]{2}$/.test(cc)) return "🌍";
+        // Palestine has a proper ISO code "PS" and emoji flag works fine.
+        return String.fromCodePoint(...[...cc].map(c => 0x1F1E6 + c.charCodeAt(0) - 65));
+      } catch { return "🌍"; }
+    }
+
+    async function detectCountryFlag() {
+      try {
+        const res = await fetch("https://ipapi.co/json/");
+        const data = await res.json();
+        detectedFlag = codeToFlag(data.country_code) || "🇵🇸";
+      } catch {
+        detectedFlag = "🇵🇸";
+      }
+    }
+
+    // GitHub: read users.json (or create if missing)
+    async function loadUsersJson() {
+      const res = await fetch(API_URL, { headers: headers() });
+      if (res.status === 404) {
+        // create an empty file
+        const initial = { users: [] };
+        const body = {
+          message: "init users.json",
+          content: btoa(JSON.stringify(initial, null, 2))
+        };
+        const put = await fetch(API_URL, {
+          method: "PUT",
+          headers: { ...headers(), "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        });
+        const j = await put.json();
+        fileSha = j.content.sha;
+        allUsers = [];
+        return;
+      }
+      const json = await res.json();
+      fileSha = json.sha;
+      const content = atob(json.content || "");
+      const parsed = JSON.parse(content || "{}");
+      allUsers = Array.isArray(parsed.users) ? parsed.users : [];
+    }
+
+    async function saveUsersJson() {
+      const content = { users: allUsers };
+      const body = {
+        message: "update leaderboard",
+        content: btoa(JSON.stringify(content, null, 2)),
+        sha: fileSha || undefined
+      };
+      const put = await fetch(API_URL, {
+        method: "PUT",
+        headers: { ...headers(), "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      const j = await put.json();
+      if (j && j.content && j.content.sha) fileSha = j.content.sha;
+    }
+
+    function renderLeaderboard() {
+      const top = [...allUsers].sort((a,b)=> (b.totalScore||0) - (a.totalScore||0)).slice(0, 10);
+      leaderboardList.innerHTML = "";
+      top.forEach((u, i) => {
+        const li = document.createElement("li");
+        if (i === 0) li.classList.add("rank-1");
+        else if (i === 1) li.classList.add("rank-2");
+        else if (i === 2) li.classList.add("rank-3");
+
+        const flagSpan = document.createElement("span");
+        flagSpan.className = "flag";
+        flagSpan.textContent = u.flag || "🌍";
+
+        li.appendChild(flagSpan);
+        li.appendChild(document.createTextNode(` ${u.nickname}: ${u.totalScore || 0}`));
+        leaderboardList.appendChild(li);
+      });
+    }
+
+    function updateCounters() {
+      localCoinsEl.textContent = "💰 PC Simulator Coins: " + sessionScore;
+      totalCoinsEl.textContent = "Your Total Score: " + (currentUser?.totalScore || 0);
+    }
+
+    function enableGame() {
+      earnBtn.style.display = "inline-block";
+      nicknameEl.disabled = true;
+    }
+
+    // Try auto-login from localStorage
+    async function tryRestoreUser() {
+      const savedName = localStorage.getItem("pcsim_nickname");
+      if (!savedName) return false;
+      await loadUsersJson();
+      const found = allUsers.find(u => u.nickname.toLowerCase() === savedName.toLowerCase());
+      if (!found) {
+        localStorage.removeItem("pcsim_nickname");
+        return false;
+      }
+      currentUser = { ...found };
+      enableGame();
+      renderLeaderboard();
+      updateCounters();
+      return true;
+    }
+
+    // Nickname lock-in
+    nicknameEl.addEventListener("change", async () => {
+      const name = nicknameEl.value.trim();
+      if (!name) return;
+
+      await loadUsersJson();
+      // unique nickname enforced (case-insensitive)
+      const taken = allUsers.find(u => u.nickname.toLowerCase() === name.toLowerCase());
+      if (taken) {
+        alert("Nickname already taken. Choose another.");
+        return;
+      }
+      // create user with detected flag
+      const newUser = { nickname: name, totalScore: 0, flag: detectedFlag };
+      allUsers.push(newUser);
+      await saveUsersJson();
+
+      currentUser = { ...newUser };
+      localStorage.setItem("pcsim_nickname", currentUser.nickname);
+      enableGame();
+      renderLeaderboard();
+      updateCounters();
+    });
+
+    // Earn button (+5 to session and total)
+    earnBtn.addEventListener("click", async () => {
+      if (!currentUser) return;
+
+      sessionScore += 5;
+      updateCounters();
+
+      // update on GitHub
+      await loadUsersJson(); // refresh to get latest + sha
+      const u = allUsers.find(u => u.nickname.toLowerCase() === currentUser.nickname.toLowerCase());
+      if (u) {
+        u.totalScore = (u.totalScore || 0) + 5;
+        // keep their saved flag, but if we detected and they had none, set it
+        if (!u.flag) u.flag = detectedFlag;
+        currentUser.totalScore = u.totalScore;
+      }
+      await saveUsersJson();
+      renderLeaderboard();
+      updateCounters();
+    });
+
+    // Boot
+    (async function init() {
+      await detectCountryFlag();
+      const restored = await tryRestoreUser();
+      if (!restored) {
+        // load leaderboard for viewers even before nickname chosen
+        await loadUsersJson();
+        renderLeaderboard();
+      }
+      updateCounters();
+    })();
+  </script>
+</body>
+</html>
