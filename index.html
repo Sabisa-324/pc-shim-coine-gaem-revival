@@ -5,11 +5,6 @@
   <title>PC Simulator Coins Game</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    :root {
-      --green: #4caf50;
-      --panel: rgba(0,0,0,0.6);
-    }
-
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
@@ -20,18 +15,9 @@
       justify-content: center;
       min-height: 100vh;
     }
-
-    .wrapper {
-      display: flex;
-      gap: 24px;
-      width: 100%;
-      max-width: 1200px;
-      padding: 24px;
-    }
-
-    /* Leaderboard (left on desktop, bottom on mobile) */
+    .wrapper { display: flex; gap: 24px; width: 100%; max-width: 1200px; padding: 24px; }
     #leaderboard {
-      background: var(--panel);
+      background: rgba(0,0,0,0.6);
       padding: 20px;
       border-radius: 12px;
       min-width: 260px;
@@ -40,86 +26,58 @@
       overflow-y: auto;
     }
     #leaderboard h2 { margin-top: 0; }
-
-    /* Game container */
     .container {
       flex: 1;
       background: rgba(0,0,0,0.28);
       border-radius: 16px;
       padding: 28px 20px 36px;
       text-align: center;
+      position: relative;
     }
-
-    /* Outlined title text */
-    .outlined {
-      color: #fff;
-      -webkit-text-stroke: 1.6px #000;
-      text-shadow:
-        1px 1px 0 #000,
-       -1px 1px 0 #000,
-        1px -1px 0 #000,
-       -1px -1px 0 #000,
-        0 2px 4px rgba(0,0,0,0.6);
-    }
-
-    h1.outlined {
+    h1 {
       font-size: 46px;
       margin: 6px 0 26px;
+      color: #fff;
       -webkit-text-stroke: 2px #000;
     }
-
-    /* Big session coins counter */
-    #localCoins {
-      font-size: 42px;
-      font-weight: bold;
-      margin-top: 24px;
-      color: #ffd700;
-      text-shadow: 2px 2px 6px #000;
-    }
-
-    /* Total score line */
-    #totalCoins {
-      margin-top: 8px;
-      font-size: 18px;
-      color: #00dd00;
-      text-shadow: 1px 1px 3px #000;
-    }
-
-    input[type="text"] {
+    #localCoins { font-size: 42px; font-weight: bold; margin-top: 24px; color: #ffd700; text-shadow: 2px 2px 6px #000; }
+    #totalCoins { margin-top: 8px; font-size: 18px; color: #00dd00; text-shadow: 1px 1px 3px #000; }
+    input[type="text"], input[type="password"] {
       font-size: 18px;
       padding: 12px 14px;
       border-radius: 10px;
       border: none;
       outline: none;
       width: min(520px, 90%);
+      margin-top: 10px;
     }
-
-    #earnBtn {
-      font-size: 32px;
-      padding: 18px 52px;
-      margin: 24px 0 16px;
-      border-radius: 14px;
+    button {
+      font-size: 22px;
+      padding: 12px 24px;
+      margin: 10px 6px;
+      border-radius: 10px;
       border: none;
       cursor: pointer;
-      background-color: var(--green);
-      color: #fff;                 /* white text */
+      background-color: #4caf50;
+      color: #fff;
       box-shadow: 0 6px 14px rgba(0,0,0,0.45);
-      display: none;               /* hidden until nickname is set */
     }
-    #earnBtn:active {
-      transform: translateY(1px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    #earnBtn {
+      width: 200px;       
+      height: 100px;       
+      margin-top: 24px;       
+      background-color: #00ff00;       
+      color: #000;       
+      border-radius: 10px;       
+      box-shadow: 0 4px 8px rgba(0,0,0,0.6);       
+      border: none;       
+      outline: none;       
+      user-select: none;       
+      cursor: pointer;
     }
-
-    ol#leaderboardList {
-      padding-left: 0;
-      list-style: decimal inside;
-      text-align: left;
-      margin: 12px 0 0;
-    }
-
-    /* Each row is a rounded, filled frame */
-    ol#leaderboardList li {
+    #earnBtn:active { background: #c9a92f; }
+    ol { padding-left: 0; list-style: decimal inside; text-align: left; margin: 12px 0 0; }
+    ol li {
       background: rgba(255,255,255,0.12);
       margin: 6px 0;
       padding: 10px 14px;
@@ -129,266 +87,252 @@
       gap: 10px;
       box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
     }
-
-    .rank-1 {
-      background: #ffd700 !important; /* gold */
-      color: #000;
-      font-weight: bold;
-    }
-    .rank-2 {
-      background: #c0c0c0 !important; /* silver */
-      color: #000;
-      font-weight: bold;
-    }
-    .rank-3 {
-      background: #cd7f32 !important; /* bronze */
-      color: #fff;
-      font-weight: bold;
-    }
-
-    .flag { font-size: 18px; }
-
-    /* Optional note */
-    .free-palestine {
-      margin-top: 16px;
+    .rank-1 { background: #ffd700 !important; color: #000; font-weight: bold; }
+    .rank-2 { background: #c0c0c0 !important; color: #000; font-weight: bold; }
+    .rank-3 { background: #cd7f32 !important; color: #fff; font-weight: bold; }
+    #logoutBtn {
+      position: absolute;
+      top: 10px;
+      left: 10px;
       font-size: 16px;
-      color: #00aa00;
-      font-weight: bold;
-      text-shadow: 1px 1px 2px #000;
+      background: none;
+      color: #fff;
+      text-decoration: underline;
+      cursor: pointer;
+      border: none;
+      padding: 0;
+      box-shadow: none;
     }
-
-    /* Mobile: leaderboard always under the game (bottom) */
     @media (max-width: 900px) {
-      .wrapper {
-        flex-direction: column;
-        align-items: center;
-      }
+      .wrapper { flex-direction: column; align-items: center; }
       .container { order: 1; width: 92%; }
       #leaderboard { order: 2; margin-top: 20px; width: 92%; max-width: 560px; max-height: unset; }
-      h1.outlined { font-size: 36px; -webkit-text-stroke: 1.6px #000; }
-      #earnBtn { font-size: 26px; padding: 16px 40px; }
+      h1 { font-size: 36px; -webkit-text-stroke: 1.6px #000; }
+      #earnBtn { font-size: 26px; padding: 26px 48px; }
       #localCoins { font-size: 34px; }
     }
   </style>
 </head>
 <body>
   <div class="wrapper">
-    <!-- Main game -->
     <main class="container">
-      <h1 class="outlined">🔥 PC Simulator Coins Game 🔥</h1>
+      <button id="logoutBtn" style="display:none;">Logout</button>
+      <h1>🔥 PC Simulator Coins Game 🔥</h1>
 
-      <input type="text" id="nickname" placeholder="Enter nickname" autocomplete="off" />
-      <br />
-      <button id="earnBtn">Earn</button>
+      <!-- Auth UI -->
+      <div id="authUI">
+        <button id="showLogin">Login</button>
+        <button id="showRegister">Register</button>
+        <div id="loginForm" style="display:none;">
+          <input type="text" id="loginName" placeholder="Nickname" />
+          <input type="password" id="loginPass" placeholder="Password" />
+          <button id="loginBtn">Login</button>
+        </div>
+        <div id="registerForm" style="display:none;">
+          <input type="text" id="regName" placeholder="Choose Nickname" />
+          <input type="password" id="regPass" placeholder="Choose Password" />
+          <button id="registerBtn">Register</button>
+        </div>
+      </div>
 
-      <!-- Big session counter + total -->
-      <div id="localCoins">💰 PC Simulator Coins: 0</div>
-      <div id="totalCoins">Your Total Score: 0</div>
-
-      <div class="free-palestine">Free cornet & sabisa</div>
+      <!-- Game UI -->
+      <div id="gameUI" style="display:none;">
+        <button id="earnBtn">EARN</button>
+        <div id="localCoins">💰 PC Simulator Coins: 0</div>
+        <div id="totalCoins">Your Total Score: 0</div>
+      </div>
     </main>
 
-    <!-- Leaderboard -->
     <aside id="leaderboard">
       <h2>🏆 Leaderboard</h2>
       <ol id="leaderboardList"></ol>
     </aside>
   </div>
 
-  <script>
-    /***************  SET THESE 3 VALUES  ***************/
-    const REPO = "moade771/PC-SIMULATOR-COINS-GAME";      // e.g. "octocat/my-game"
-    const FILE_PATH = "users.json";          // keep as "users.json"
-    const GITHUB_TOKEN = "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"; // ghp_xxx with repo access
-    /****************************************************/
+  <!-- Firebase SDKs -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, get, set, update, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-    // ---- Elements
-    const nicknameEl = document.getElementById("nickname");
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_cipEXGL0uOlMsqvzsK4jDHzTHB6iG9k",
+      authDomain: "pc-simulator-coins-game-1fc13.firebaseapp.com",
+      databaseURL: "https://pc-simulator-coins-game-1fc13-default-rtdb.firebaseio.com",
+      projectId: "pc-simulator-coins-game-1fc13",
+      storageBucket: "pc-simulator-coins-game-1fc13.appspot.com",
+      messagingSenderId: "424767393111",
+      appId: "1:424767393111:web:37bdc0031d413a1b908212",
+      measurementId: "G-5ZBJTR620J"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Easter Eggs
+    const easterEggs = {
+      "cornet": { coins: 100, message: "Free Cornet!" },
+      "nigga": { coins: -100, message: "You racist madafaka" },
+      "john": { coins: 200, message: "Have you gotten soft 47?" },
+      "47": { coins: 200, message: "Have you gotten soft 47?" },
+      "agent47": { coins: 200, message: "Have you gotten soft 47?" },
+      "yaming": { coins: 0, message: "Are you the real one?" },
+      "sandwich": { coins: 300, message: "FUCK BURGERS" },
+      "yamimg": { coins: 300, message: "FUCK BURGERS" },
+      "sabisa": { coins: 1, message: "Free Sabisa" },
+      "nobody": { coins: 0, message: "Who are you?" },
+      "goobie": { coins: 0, message: "More like Goonie" }
+    };
+
+    function checkEasterEgg(nickname, userRef, userObj) {
+      const key = nickname.toLowerCase();
+      if (easterEggs[key]) {
+        const egg = easterEggs[key];
+        if (egg.coins !== 0) {
+          userObj.totalScore += egg.coins;
+          update(userRef, { totalScore: userObj.totalScore });
+        }
+        alert(egg.message);
+      }
+    }
+
+    // Elements
+    const authUI = document.getElementById("authUI");
+    const gameUI = document.getElementById("gameUI");
+    const logoutBtn = document.getElementById("logoutBtn");
     const earnBtn = document.getElementById("earnBtn");
-    const leaderboardList = document.getElementById("leaderboardList");
     const localCoinsEl = document.getElementById("localCoins");
     const totalCoinsEl = document.getElementById("totalCoins");
+    const leaderboardList = document.getElementById("leaderboardList");
 
-    // ---- State
+    const showLogin = document.getElementById("showLogin");
+    const showRegister = document.getElementById("showRegister");
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
+    const loginBtn = document.getElementById("loginBtn");
+    const registerBtn = document.getElementById("registerBtn");
+
+    let currentUser = null;
     let sessionScore = 0;
-    let allUsers = [];
-    let currentUser = null; // { nickname, totalScore, flag }
-    let fileSha = null;     // latest SHA of users.json
-    let detectedFlag = "🇵🇸"; // default fallback
+    let pendingCoins = 0;
 
-    // ---- Helpers
-    const API_URL = `https://api.github.com/repos/${REPO}/contents/${FILE_PATH}`;
-    const headers = () => ({
-      "Accept": "application/vnd.github+json",
-      "Authorization": `token ${GITHUB_TOKEN}`,
-      "Cache-Control": "no-cache"
-    });
-
-    // Country flag from ISO code
-    function codeToFlag(code) {
-      try {
-        const cc = (code || "").toUpperCase();
-        if (!/^[A-Z]{2}$/.test(cc)) return "🌍";
-        // Palestine has a proper ISO code "PS" and emoji flag works fine.
-        return String.fromCodePoint(...[...cc].map(c => 0x1F1E6 + c.charCodeAt(0) - 65));
-      } catch { return "🌍"; }
-    }
-
-    async function detectCountryFlag() {
-      try {
-        const res = await fetch("https://ipapi.co/json/");
-        const data = await res.json();
-        detectedFlag = codeToFlag(data.country_code) || "🇵🇸";
-      } catch {
-        detectedFlag = "🇵🇸";
-      }
-    }
-
-    // GitHub: read users.json (or create if missing)
-    async function loadUsersJson() {
-      const res = await fetch(API_URL, { headers: headers() });
-      if (res.status === 404) {
-        // create an empty file
-        const initial = { users: [] };
-        const body = {
-          message: "init users.json",
-          content: btoa(JSON.stringify(initial, null, 2))
-        };
-        const put = await fetch(API_URL, {
-          method: "PUT",
-          headers: { ...headers(), "Content-Type": "application/json" },
-          body: JSON.stringify(body)
-        });
-        const j = await put.json();
-        fileSha = j.content.sha;
-        allUsers = [];
-        return;
-      }
-      const json = await res.json();
-      fileSha = json.sha;
-      const content = atob(json.content || "");
-      const parsed = JSON.parse(content || "{}");
-      allUsers = Array.isArray(parsed.users) ? parsed.users : [];
-    }
-
-    async function saveUsersJson() {
-      const content = { users: allUsers };
-      const body = {
-        message: "update leaderboard",
-        content: btoa(JSON.stringify(content, null, 2)),
-        sha: fileSha || undefined
-      };
-      const put = await fetch(API_URL, {
-        method: "PUT",
-        headers: { ...headers(), "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-      });
-      const j = await put.json();
-      if (j && j.content && j.content.sha) fileSha = j.content.sha;
-    }
-
-    function renderLeaderboard() {
-      const top = [...allUsers].sort((a,b)=> (b.totalScore||0) - (a.totalScore||0)).slice(0, 10);
+    // Leaderboard live update
+    const usersRef = ref(db, "users");
+    onValue(usersRef, (snapshot) => {
+      const data = snapshot.val() || {};
+      const users = Object.values(data).sort((a,b)=>(b.totalScore||0)-(a.totalScore||0)).slice(0,10);
       leaderboardList.innerHTML = "";
-      top.forEach((u, i) => {
+      users.forEach((u,i)=>{
         const li = document.createElement("li");
-        if (i === 0) li.classList.add("rank-1");
-        else if (i === 1) li.classList.add("rank-2");
-        else if (i === 2) li.classList.add("rank-3");
-
-        const flagSpan = document.createElement("span");
-        flagSpan.className = "flag";
-        flagSpan.textContent = u.flag || "🌍";
-
-        li.appendChild(flagSpan);
-        li.appendChild(document.createTextNode(` ${u.nickname}: ${u.totalScore || 0}`));
+        if (i===0) li.classList.add("rank-1");
+        else if (i===1) li.classList.add("rank-2");
+        else if (i===2) li.classList.add("rank-3");
+        li.textContent = `${u.nickname}: ${u.totalScore || 0}`;
         leaderboardList.appendChild(li);
       });
-    }
+    });
 
     function updateCounters() {
       localCoinsEl.textContent = "💰 PC Simulator Coins: " + sessionScore;
       totalCoinsEl.textContent = "Your Total Score: " + (currentUser?.totalScore || 0);
     }
 
-    function enableGame() {
-      earnBtn.style.display = "inline-block";
-      nicknameEl.disabled = true;
-    }
-
-    // Try auto-login from localStorage
-    async function tryRestoreUser() {
-      const savedName = localStorage.getItem("pcsim_nickname");
-      if (!savedName) return false;
-      await loadUsersJson();
-      const found = allUsers.find(u => u.nickname.toLowerCase() === savedName.toLowerCase());
-      if (!found) {
-        localStorage.removeItem("pcsim_nickname");
-        return false;
-      }
-      currentUser = { ...found };
-      enableGame();
-      renderLeaderboard();
-      updateCounters();
-      return true;
-    }
-
-    // Nickname lock-in
-    nicknameEl.addEventListener("change", async () => {
-      const name = nicknameEl.value.trim();
-      if (!name) return;
-
-      await loadUsersJson();
-      // unique nickname enforced (case-insensitive)
-      const taken = allUsers.find(u => u.nickname.toLowerCase() === name.toLowerCase());
-      if (taken) {
-        alert("Nickname already taken. Choose another.");
-        return;
-      }
-      // create user with detected flag
-      const newUser = { nickname: name, totalScore: 0, flag: detectedFlag };
-      allUsers.push(newUser);
-      await saveUsersJson();
-
-      currentUser = { ...newUser };
-      localStorage.setItem("pcsim_nickname", currentUser.nickname);
-      enableGame();
-      renderLeaderboard();
-      updateCounters();
-    });
-
-    // Earn button (+5 to session and total)
-    earnBtn.addEventListener("click", async () => {
+    async function safeUpdateCoins() {
       if (!currentUser) return;
+      const nameKey = currentUser.nickname.toLowerCase();
+      const userRef = ref(db, "users/" + nameKey);
+      const snap = await get(userRef);
+      if (!snap.exists()) return;
+      const dbUser = snap.val();
+      dbUser.totalScore += pendingCoins;
+      pendingCoins = 0;
+      currentUser.totalScore = dbUser.totalScore;
+      await update(userRef, { totalScore: dbUser.totalScore });
+      updateCounters();
+    }
 
+    earnBtn.addEventListener("click", () => {
+      if (!currentUser) return;
       sessionScore += 5;
+      pendingCoins += 5;
+      currentUser.totalScore += 5;
       updateCounters();
-
-      // update on GitHub
-      await loadUsersJson(); // refresh to get latest + sha
-      const u = allUsers.find(u => u.nickname.toLowerCase() === currentUser.nickname.toLowerCase());
-      if (u) {
-        u.totalScore = (u.totalScore || 0) + 5;
-        // keep their saved flag, but if we detected and they had none, set it
-        if (!u.flag) u.flag = detectedFlag;
-        currentUser.totalScore = u.totalScore;
-      }
-      await saveUsersJson();
-      renderLeaderboard();
-      updateCounters();
+      safeUpdateCoins();
     });
 
-    // Boot
-    (async function init() {
-      await detectCountryFlag();
-      const restored = await tryRestoreUser();
-      if (!restored) {
-        // load leaderboard for viewers even before nickname chosen
-        await loadUsersJson();
-        renderLeaderboard();
-      }
+    // Auth
+    showLogin.onclick = ()=>{ loginForm.style.display="block"; registerForm.style.display="none"; };
+    showRegister.onclick = ()=>{ registerForm.style.display="block"; loginForm.style.display="none"; };
+
+    registerBtn.onclick = async () => {
+      const name = document.getElementById("regName").value.trim();
+      const pass = document.getElementById("regPass").value.trim();
+      if (!name || !pass) { alert("Enter nickname and password"); return; }
+
+      const userRef = ref(db, "users/" + name.toLowerCase());
+      const snap = await get(userRef);
+      if (snap.exists()) { alert("Nickname already taken"); return; }
+
+      const newUser = { nickname: name, password: pass, totalScore: 0 };
+      await set(userRef, newUser);
+
+      // Easter Egg check
+      checkEasterEgg(name, userRef, newUser);
+
+      localStorage.setItem("user", JSON.stringify(newUser));
+      currentUser = newUser;
+      authUI.style.display="none";
+      gameUI.style.display="block";
+      logoutBtn.style.display="block";
       updateCounters();
-    })();
+    };
+
+    loginBtn.onclick = async () => {
+      const name = document.getElementById("loginName").value.trim();
+      const pass = document.getElementById("loginPass").value.trim();
+      if (!name || !pass) { alert("Enter nickname and password"); return; }
+
+      const userRef = ref(db, "users/" + name.toLowerCase());
+      const snap = await get(userRef);
+      if (!snap.exists()) { alert("User not found"); return; }
+      const dbUser = snap.val();
+      if (dbUser.password !== pass) { alert("Wrong password"); return; }
+
+      currentUser = dbUser;
+      localStorage.setItem("user", JSON.stringify(dbUser));
+      authUI.style.display="none";
+      gameUI.style.display="block";
+      logoutBtn.style.display="block";
+      updateCounters();
+    };
+
+    logoutBtn.onclick = () => {
+      localStorage.removeItem("user");
+      currentUser = null;
+      sessionScore = 0;
+      authUI.style.display="block";
+      gameUI.style.display="none";
+      logoutBtn.style.display="none";
+    };
+
+    // Auto login
+    window.addEventListener("load", async ()=>{
+      const saved = localStorage.getItem("user");
+      if (saved) {
+        const u = JSON.parse(saved);
+        const userRef = ref(db, "users/" + u.nickname.toLowerCase());
+        const snap = await get(userRef);
+        if (snap.exists() && snap.val().password === u.password) {
+          currentUser = snap.val();
+          authUI.style.display="none";
+          gameUI.style.display="block";
+          logoutBtn.style.display="block";
+          updateCounters();
+        } else {
+          localStorage.removeItem("user");
+        }
+      }
+    });
   </script>
 </body>
 </html>
